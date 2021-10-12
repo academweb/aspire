@@ -20,7 +20,8 @@ git commit -m 'deploy'
 # git push -f git@github.com:<USERNAME>/<USERNAME>.github.io.git master
 
 # если вы публикуете по адресу https://<USERNAME>.github.io/<REPO>
-# git -f subtree push --prefix dist  git@github.com:academweb/aspire.git master:gh-pages
-git subtree push --prefix dist origin gh-pages
+git  push -f  git@github.com:academweb/aspire.git master:gh-pages
+
+# git subtree push --prefix dist origin gh-pages
 
 cd -
