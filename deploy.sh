@@ -22,6 +22,6 @@ git commit -m 'deploy'
 # если вы публикуете по адресу https://<USERNAME>.github.io/<REPO>
 # git  push -f  git@github.com:academweb/aspire.git main:gh-pages
 
-git subtree push -f --prefix dist origin gh-pages
+git subtree push -f --prefix dist origin  main:gh-pages
 
 cd -
