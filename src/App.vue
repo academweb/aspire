@@ -1,17 +1,18 @@
 <template>
   <div id="app">
-<CustomerForm />
+    test
+    <CustomerForm />
   </div>
 </template>
 
 <script>
-import CustomerForm from './components/CustomerForm.vue';
+import CustomerForm from "./components/CustomerForm.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    CustomerForm
-  }
-}
+    CustomerForm,
+  },
+};
 </script>
 
 <style>
@@ -19,6 +20,5 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 }
 </style>
