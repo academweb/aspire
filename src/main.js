@@ -4,6 +4,12 @@ import App from './App.vue'
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 
+import VTooltip from 'v-tooltip'
+const options ={
+  defaultPlacement: 'right'
+}
+Vue.use(VTooltip, options)
+
 Vue.config.productionTip = false
 
 const app = new Vue({

@@ -20,32 +20,38 @@
           <div class="col-3 row align-items-center">
             <p class="fs-4 mb-0">Client</p>
           </div>
-          <div class="col-auto row align-items-center">
+          <div class="col-12 col-md-4 row align-items-center">
             <select
               class="form-select form-select-lg"
-              aria-label="Default select example"
+              aria-label="Client"
+              v-model="client"
             >
-              <option selected>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option selected value="null" disabled>Celect client</option>
+              <option v-for="client in clients" :value="client.id" :key="client.id">{{ client.name }}</option>
             </select>
+          </div>
+          <div class="col-auto d-flex align-items-center">
+            <Tooltip title="What company are you with?" />
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-3 row align-items-center">
             <p class="fs-4 mb-0">Property</p>
           </div>
-          <div class="col-auto row align-items-center">
+          <div class="col-12 col-md-4 row align-items-center">
             <select
               class="form-select form-select-lg"
-              aria-label="Default select example"
+              aria-label="Property"
+              v-model="property"
             >
-              <option selected>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option selected value="null" disabled>Celect property</option>
+              <option v-for="property in properties" :value="property.id" :key="property.id">{{ property.name }}</option>
             </select>
+          </div>
+          <div class="col-auto d-flex align-items-center">
+            <Tooltip
+              title="For which property would you like to purchase calls?"
+            />
           </div>
         </div>
       </div>
@@ -67,7 +73,8 @@
           <div class="col-6 col-md-2">
             <select
               class="form-select form-select-lg"
-              aria-label="Default select example"
+              aria-label="Custom"
+              v-model="monthly.custom"
             >
               <option v-for="m in 12" :value="m" :key="m">{{ m }}</option>
             </select>
@@ -80,7 +87,8 @@
           <div class="col-6 col-md-2">
             <select
               class="form-select form-select-lg"
-              aria-label="Default select example"
+              aria-label="Standart"
+              v-model="monthly.standart"
             >
               <option v-for="m in 12" :value="m" :key="m">{{ m }}</option>
             </select>
@@ -100,6 +108,7 @@
                 name="discount"
                 id="quarterly"
                 value="quarterly"
+                v-model="discount"
               />
               <label class="form-check-label" for="quarterly">
                 Quarterly 5% *
@@ -113,6 +122,7 @@
                 id="annual"
                 checked
                 value="annual"
+                v-model="discount"
               />
               <label class="form-check-label" for="annual"> Annual 10% </label>
             </div>
@@ -126,9 +136,10 @@
           <div class="col-6 col-md-2">
             <select
               class="form-select form-select-lg"
-              aria-label="Default select example"
+              aria-label="starting date"
+              v-model="starting_date"
             >
-              <option v-for="m in 12" :value="m" :key="m">{{ m }}</option>
+              <option v-for="m in month" :value="m" :key="m">{{ m }}</option>
             </select>
           </div>
           <div class="col-6 col-md-auto">monthly</div>
@@ -142,30 +153,44 @@
                 class="form-check-input"
                 type="radio"
                 name="exclude"
+                value="all_year"
                 id="all_year"
+                v-model="exclude"
               />
               <label class="form-check-label" for="all_year"> All year </label>
             </div>
           </div>
-          <div class="col-12 col-md-4">
+          <div class="col-12 col-md-6">
             <div class="form-check mb-4">
               <input
                 class="form-check-input"
                 type="radio"
                 name="exclude"
+                value="specific_month"
                 id="specific_month"
+                v-model="exclude"
               />
               <label class="form-check-label" for="specific_month">
                 Specific months
               </label>
             </div>
-            <p>Enter excluded date ranges for calls</p>
+            <p>
+              Enter excluded date ranges for calls
+              <Tooltip
+                title="Helpful to avoid calls during off-season times."
+              />
+            </p>
             <div class="mb-3 row">
               <label for="excluded_start" class="col-sm-4 col-form-label"
                 >Starting date</label
               >
               <div class="col-sm-8">
-                <input type="date" class="form-control" id="excluded_start" />
+                <input
+                  v-model="specific_month.start"
+                  type="date"
+                  class="form-control"
+                  id="excluded_start"
+                />
               </div>
             </div>
             <div class="mb-3 row">
@@ -173,7 +198,12 @@
                 >Ending date</label
               >
               <div class="col-sm-8">
-                <input type="date" class="form-control" id="excluded_end" />
+                <input
+                  v-model="specific_month.end"
+                  type="date"
+                  class="form-control"
+                  id="excluded_end"
+                />
               </div>
             </div>
           </div>
@@ -184,6 +214,48 @@
     <FormBlock header="Individual Calls">
       <div class="fs-5">
         <p>Use this form to purchase individual calls without a discount.</p>
+        <div class="px-5">
+          <div class="row align-items-center mb-4">
+            <div class="col-12 col-md-2 mb-0">Call type</div>
+            <div class="col-6 col-md-auto">
+              <select
+                class="form-select form-select-lg"
+                aria-label="Call types"
+                v-model="calls.type"
+              >
+                <option v-for="m in callTypes" :value="m.id" :key="m.id">
+                  {{ m.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row align-items-center mb-4">
+            <div class="col-6 col-md-2 mb-0"># of calls</div>
+            <div class="col-6 col-md-auto">
+              <select
+                class="form-select form-select-lg"
+                aria-label="Default select example"
+                v-model="calls.count"
+              >
+                <option v-for="m in 999" :value="m" :key="m">{{ m }}</option>
+              </select>
+            </div>
+          </div>
+          <h4>Month</h4>
+          <div class="mb-3 px-4">
+            <label for="exampleFormControlInput1" class="form-label"
+              >Select the monthly you'd like there calls to run</label
+            >
+            <select
+              style="max-width: 18rem"
+              class="form-select form-select-lg"
+              aria-label="Start month"
+              v-model="start_month"
+            >
+              <option v-for="m in month" :value="m" :key="m">{{ m }}</option>
+            </select>
+          </div>
+        </div>
       </div>
     </FormBlock>
     <FormBlock header="Notifications">
@@ -196,6 +268,7 @@
         type="text"
         placeholder="Emails"
         aria-label=".form-control-lg example"
+        v-model="notification_emails"
       />
     </FormBlock>
     <FormBlock header="Order Summary">
@@ -217,11 +290,11 @@
           </tr>
           <tr>
             <td colspan="2"></td>
-            <td ><hr class="my-0"></td>
+            <td><hr class="my-0" /></td>
           </tr>
           <tr>
             <td colspan="2" class="fw-bold">Total</td>
-            <td >$ x.xxx.xx</td>
+            <td>$ x.xxx.xx</td>
           </tr>
         </tbody>
       </table>
@@ -230,13 +303,85 @@
 </template>
 
 <script>
+import axios from "axios";
 import FormBlock from "./components/FormBlock.vue";
+import mock from "./utils/mock";
+import Tooltip from "./components/Tooltip.vue";
 export default {
   components: {
     FormBlock,
+    Tooltip,
+  },
+  data() {
+    return {
+      callTypes: mock.callTypes,
+      clients: mock.clients,
+      properties: mock.properties,
+      month: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
+      client: null,
+      property: null,
+      monthly: {
+        custom: null,
+        standart: null,
+      },
+      discount: "quarterly",
+      starting_date: null,
+      exclude: "all_year",
+      specific_month: {
+        start: null,
+        end: null,
+      },
+      calls: {
+        type: null,
+        count: null,
+      },
+      start_month: null,
+      notification_emails: null
+    };
+  },
+  methods: {
+    async getCallTypes() {
+      try {
+        // const {data} = await axios.get('/api/call-types')
+        const data = await axios({
+          method: "GET",
+          baseURL: "https://aspire.academweb.tech/",
+          url: "/api/call-types",
+          // params: {
+          //   api_token: '6cbded2788b7a71f1920043b6df4964c0c5d167a5895c0a9fcfe8729669280fa'
+          // },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Bearer 6cbded2788b7a71f1920043b6df4964c0c5d167a5895c0a9fcfe8729669280fa",
+            "Access-Control-Allow-Origin": "*",
+          },
+        });
+        console.log("data :>> ", data);
+        this.calltypes = data;
+      } catch (error) {
+        console.log("error :>> ", error);
+      }
+    },
+  },
+  async mounted() {
+    // await this.getCallTypes()
   },
 };
 </script>
 
-<style>
+<style >
 </style>
