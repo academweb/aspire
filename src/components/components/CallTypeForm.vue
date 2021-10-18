@@ -9,6 +9,7 @@
             class="form-select"
             aria-label="Call types"
             v-model="data.type"
+            required
           >
             <option selected value="null" disabled>Select</option>
             <option v-for="m in callTypes" :value="m.id" :key="m.id">
@@ -23,6 +24,7 @@
             class="form-select"
             aria-label="Default select example"
             v-model="data.count"
+            required
           >
             <option selected value="null" disabled>Select</option>
             <option v-for="m in 999" :value="m" :key="m">{{ m }}</option>
@@ -118,7 +120,7 @@ export default {
       type: Object,
       default: () => ({
         type: null,
-        count: null,
+        count: 1,
         start_month: null,
       }),
     },
