@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4" style="margin-bottom: 3rem">
+  <div class="mt-4" style="margin-bottom: 2rem">
     <h3 class=" mb-3 bg-light text-success fw-bold p-4 border-start border-5 border-success">
       {{ header }}
     </h3>
