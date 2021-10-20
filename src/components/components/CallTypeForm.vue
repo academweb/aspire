@@ -3,7 +3,7 @@
     <ValidationProvider
       vid="type"
       :name="`Call type[${index}]`"
-      rules="required"
+      rules=""
       v-slot="{ errors }"
       tag="li"
       class="list-group-item"

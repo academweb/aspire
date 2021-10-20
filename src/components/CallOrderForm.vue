@@ -4,7 +4,7 @@
       <component :is="componentId[currentStep]" @setStep="setStep"></component>
     </transition>
 
-    <div class="alert alert-secondary" role="alert">
+    <!-- <div class="alert alert-secondary" role="alert">
       Test btn
       <hr />
       <div class="row">
@@ -25,7 +25,7 @@
           </button>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

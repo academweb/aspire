@@ -5,7 +5,7 @@
     >
       Call order form
     </h1>
-    <ValidationObserver v-slot="{ handleSubmit, invalid }" ref="form">
+    <ValidationObserver v-slot="{ handleSubmit }" ref="form">
       <form @submit.prevent="handleSubmit(onSubmit)" class="needs-validation">
         <div class="my-4 px-2 px-md-5">
           <h4 class="mb-3">
@@ -119,10 +119,10 @@
               <div class="col-12 col-md-2 mb-0">Standard</div>
               <ValidationProvider
                 name="Standard"
-                rules="required"
+                rules=""
                 v-slot="{ errors }"
                 tag="div"
-                class="col-6 col-md-2"
+                class="col-6 col-md-3"
               >
                 <select
                   class="form-select"
@@ -130,7 +130,7 @@
                   v-model="monthly.standard"
                   :class="{ 'is-invalid ': !!errors[0] }"
                 >
-                  <option selected value="null" disabled>Please select</option>
+                  <option selected value="null" disabled>Select</option>
                   <option selected value="0">0</option>
                   <option v-for="m in 999" :value="m" :key="m">{{ m }}</option>
                 </select>
@@ -145,10 +145,10 @@
               <div class="col-12 col-md-2 mb-0">Custom</div>
               <ValidationProvider
                 name="Custom"
-                rules="required"
+                rules=""
                 v-slot="{ errors }"
                 tag="div"
-                class="col-6 col-md-2"
+                class="col-6 col-md-3"
               >
                 <select
                   class="form-select"
@@ -156,7 +156,7 @@
                   v-model="monthly.custom"
                   :class="{ 'is-invalid ': !!errors[0] }"
                 >
-                  <option selected value="null" disabled>Please select</option>
+                  <option selected value="null" disabled>Select</option>
                   <option selected value="0">0</option>
                   <option v-for="m in 999" :value="m" :key="m">{{ m }}</option>
                 </select>
@@ -212,7 +212,7 @@
 
             <ValidationProvider
               name="Starting month"
-              rules="required"
+              rules=""
               v-slot="{ errors }"
               tag="div"
               class="row align-items-center mb-4"
@@ -408,14 +408,18 @@
                   <strong v-show="monthly.standard">{{ monthly.standard }}x</strong> Standard/mo.
                 </td>
                 <td>{{ starting_date }}</td>
-                <td>{{ resultTableData.standardAmoutn }}</td>
+                <td>{{ resultTableData.standardAmoutn }} ({{ monthly.standard }} x {{ resultTableData.standard }})</td>
               </tr>
               <tr>
                 <td>
                   <strong  v-show="monthly.custom">{{ monthly.custom }}x</strong> Custom/mo.
                 </td>
                 <td>{{ starting_date }}</td>
-                <td>{{ resultTableData.customAmoutn }}</td>
+                <td>{{ resultTableData.customAmoutn }} ({{ monthly.custom }} x {{ resultTableData.custom }})</td>
+              </tr>
+              <tr>
+                <td colspan="2"> Individual/mo.</td>
+                <td>{{ resultTableData.individualCallsAmount }}</td>
               </tr>
               <tr
                 v-for="(coll, index) in resultTableData.calls"
@@ -437,7 +441,7 @@
                 <td>{{ resultTableData.discount }}</td>
               </tr>
               <tr>
-                <td colspan="2">Payment fee</td>
+                <td colspan="2">Payment fee <span class="text-muted">(not included in total)</span></td>
                 <td>{{ resultTableData.payment_fee }}</td>
               </tr>
               <tr>
@@ -454,7 +458,6 @@
             <button
               type="submit"
               class="btn btn-lg btn-success px-5"
-              :disabled="invalid"
             >
               Place order
             </button>
@@ -579,8 +582,8 @@ export default {
         };
       });
       return {
-        custom: null,
-        standard: null,
+        custom: moneyFilter(customPrice),
+        standard: moneyFilter(standardPrice),
         standardAmoutn: moneyFilter(standardCallsAmount),
         customAmoutn: moneyFilter(customCallsAmount),
         individualCallsAmount: moneyFilter(individualCallsAmount),
@@ -643,13 +646,14 @@ export default {
       this[ob].splice(index, 1);
     },
     onSubmit() {
-      const checkCall = this.calls.filter((el) => !el.type);
-      if (checkCall.length) {
-        this.$refs.form.setErrors({
-          type: ["Please check all call type"],
-        });
-        return;
-      }
+      // const checkCall = this.calls.filter((el) => !el.type);
+      // if (checkCall.length) {
+      //   this.$refs.form.setErrors({
+      //     type: ["Please check all call type"],
+      //   });
+      //   return;
+      // }
+
       const request = {
         client: this.client,
         property: this.property,
