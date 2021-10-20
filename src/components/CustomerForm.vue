@@ -167,7 +167,11 @@
               <div class="col-6 col-md-auto">monthly</div>
             </div>
 
-            <div class="alert alert-success px-4" role="alert" style="max-width: 40rem">
+            <div
+              class="alert alert-success px-4"
+              role="alert"
+              style="max-width: 40rem"
+            >
               <h4 class="alert-heading fw-bold">Discount</h4>
               <div>Choose the term to get a discount</div>
 
@@ -201,18 +205,21 @@
                 </div>
               </div>
               <hr class="my-0" />
-              <p class="mb-0" style="font-size: 14px">* - auto-renews quarterly</p>
+              <p class="mb-0" style="font-size: 14px">
+                * - auto-renews quarterly
+              </p>
             </div>
 
-            <div class="row align-items-center mb-4">
+            <ValidationProvider
+              name="Starting month"
+              rules="required"
+              v-slot="{ errors }"
+              tag="div"
+              class="row align-items-center mb-4"
+              slim
+            >
               <div class="col-12 col-md-2 mb-0">Starting month</div>
-              <ValidationProvider
-                name="Starting month"
-                rules="required"
-                v-slot="{ errors }"
-                tag="div"
-                class="col-6 col-md-3"
-              >
+              <div class="col-6 col-md-3">
                 <select
                   class="form-select"
                   aria-label="Starting date"
@@ -224,12 +231,12 @@
                     {{ m }}
                   </option>
                 </select>
-                <span class="text-danger" style="font-size: 14px">{{
-                  errors[0]
-                }}</span>
-              </ValidationProvider>
-              <div class="col-6 col-md-auto">monthly</div>
-            </div>
+              </div>
+              <div class="col-6 col-md-7">monthly</div>
+              <div class="col-12 col-md-12 text-danger mt-2" style="font-size: 14px">
+                {{ errors[0] }}
+              </div>
+            </ValidationProvider>
 
             <h4>Months to Exclude</h4>
             <div class="form-check mb-2">
@@ -273,7 +280,7 @@
                 <ul class="list-group" v-if="exclude != 'all_year'">
                   <SpecificMonthForm
                     v-for="(m, index) in specific_month"
-                    :data="m[index]"
+                    :data="m"
                     :index="index"
                     :key="index"
                     @addItem="addItem('specific_month')"
@@ -398,14 +405,14 @@
             <tbody>
               <tr>
                 <td>
-                  <strong>{{ monthly.standard }}x</strong> Standard/mo.
+                  <strong v-show="monthly.standard">{{ monthly.standard }}x</strong> Standard/mo.
                 </td>
                 <td>{{ starting_date }}</td>
                 <td>{{ resultTableData.standardAmoutn }}</td>
               </tr>
               <tr>
                 <td>
-                  <strong>{{ monthly.custom }}x</strong> Custom/mo.
+                  <strong  v-show="monthly.custom">{{ monthly.custom }}x</strong> Custom/mo.
                 </td>
                 <td>{{ starting_date }}</td>
                 <td>{{ resultTableData.customAmoutn }}</td>
@@ -541,21 +548,23 @@ export default {
         this.callTypes.find((call) => call.id === 2)?.price || 0;
       const customPrice =
         this.callTypes.find((call) => call.id === 1)?.price || 0;
+
       const standardCallsAmount = standardPrice * this.monthly.standard;
       const customCallsAmount = customPrice * this.monthly.custom;
+
       const individualCallsAmount =
         this.calls.reduce((acc, c) => {
           const price =
             this.callTypes.find((call) => call.id === c.type)?.price || 1;
           return c?.type ? acc + c.count * price : acc;
-        }, 0) * this.monthly.custom;
+        }, 0);
       const total =
         customCallsAmount + standardCallsAmount + individualCallsAmount;
       const discount =
         total -
         total * ((100 - this.discountArray[this.discount].amount) / 100);
       const payment_fee =
-        this.discount === "annual" ? "3.5%" : "3.5% (per payment)";
+        this.discount === "annual" ? "2.9% + $0.30" : "2.9% + $0.30 (per payment)";
       const notEmpty = (val) => !!val.type && !!val.count;
       const calls = this.calls.filter(notEmpty).map((c) => {
         const callItem = this.callTypes.find(
@@ -647,11 +656,10 @@ export default {
         calls: this.calls,
         discount: this.discount,
         monthly: this.monthly,
-        amount: this.resultTableData
-      }
-      this.$store.commit('setData', request);
-      this.$emit('setStep', 'step-2')
-
+        amount: this.resultTableData,
+      };
+      this.$store.commit("setData", request);
+      this.$emit("setStep", "step-2");
     },
   },
   async mounted() {

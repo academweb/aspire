@@ -1,11 +1,12 @@
 <template>
-  <li class="list-group-item">
+  <!-- <li class="list-group-item"> -->
     <ValidationProvider
       vid="type"
       :name="`Call type[${index}]`"
       rules="required"
       v-slot="{ errors }"
-      slim
+      tag="li"
+      class="list-group-item"
     >
       <div class="d-flex flex-wrap justify-content-between align-items-center">
         <div class="col-12 col-md-11 d-flex flex-wrap align-items-center">
@@ -124,7 +125,7 @@
         </div>
       </div>
     </ValidationProvider>
-  </li>
+  <!-- </li> -->
 </template>
 
 <script>

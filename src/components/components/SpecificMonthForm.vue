@@ -3,20 +3,37 @@
     <div class="d-flex flex-wrap justify-content-between align-items-center">
       <div class="col-12 col-md-11 d-flex flex-wrap align-items-center">
         <div class="col-12 col-md-6 row">
-          <label for="excluded_start" class="col-sm-4 col-form-label"
-            >Starting date</label
+          <ValidationProvider
+            name="Starting date"
+            rules="required"
+            v-slot="{ errors }"
+            vid="startMonth"
+            slim
           >
-          <div class="col-sm-8">
-            <input
-              v-model="data.start"
-              type="date"
-              class="form-control"
-              id="excluded_start"
-             
-            />
-          </div>
+            <label for="excluded_start" class="col-sm-4 col-form-label"
+              >Starting date</label
+            >
+            <div class="col-sm-8">
+              <input
+                v-model="data.start"
+                type="date"
+                class="form-control"
+                id="excluded_start"
+                :class="{ 'is-invalid ': !!errors[0] }"
+              />
+              <span class="form-control-invalid" >{{
+                errors[0]
+              }}</span>
+            </div>
+          </ValidationProvider>
         </div>
         <div class="col-12 col-md-6 row ps-0 ps-md-3">
+          <ValidationProvider
+            name="Ending date"
+            :rules="{ required: true, more: { otherValue: '@startMonth', more: data.end } }"
+            v-slot="{ errors }"
+            slim
+          >
           <label for="excluded_end" class="col-sm-4 col-form-label"
             >Ending date</label
           >
@@ -26,9 +43,14 @@
               type="date"
               class="form-control"
               id="excluded_end"
-              
+              :class="{ 'is-invalid ': !!errors[0] }"
             />
+            
           </div>
+          <span class="form-control-invalid">{{
+                errors[0]
+              }}</span>
+          </ValidationProvider>
         </div>
       </div>
       <div

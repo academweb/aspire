@@ -1,6 +1,6 @@
 import { ValidationProvider, ValidationObserver, extend } from 'vee-validate';
 import * as rules from "vee-validate/dist/rules";
-
+import moment from 'moment';
 // Add all rules
 Object.keys(rules).map(rule => extend(rule, rules[rule]))
 
@@ -20,6 +20,15 @@ Object.keys(rules).map(rule => extend(rule, rules[rule]))
 //   message: '{_field_} is required',
 //   computesRequired: true
 // });
+
+extend("more", {
+  params: ["otherValue", "more"],
+  validate: (value, { otherValue, more }) => {
+    return moment(more).diff(moment(otherValue), 'days') > 0
+  },
+  message:
+    "The end date must be greater than the start date."
+});
 
 export default (Vue) => {
   // Register it globally

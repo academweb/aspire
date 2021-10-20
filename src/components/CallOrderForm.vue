@@ -61,4 +61,16 @@ export default {
 </script>
 
 <style>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+.form-control-invalid{
+  display: inline-block;
+  color: var(--bs-danger);
+  font-size: 14px;
+  min-height: 22px;
+}
 </style>
