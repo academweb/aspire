@@ -7,7 +7,7 @@
             name="Starting date"
             rules="required"
             v-slot="{ errors }"
-            vid="startMonth"
+            :vid="`startMonth[${index}]`"
             slim
           >
             <label for="excluded_start" class="col-sm-4 col-form-label"
@@ -30,7 +30,7 @@
         <div class="col-12 col-md-6 row ps-0 ps-md-3">
           <ValidationProvider
             name="Ending date"
-            :rules="{ required: true, more: { otherValue: '@startMonth', more: data.end } }"
+            :rules="{ required: true, more: { otherValue: '@startMonth'+`[${index}]`, more: data.end } }"
             v-slot="{ errors }"
             slim
           >

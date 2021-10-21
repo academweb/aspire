@@ -1,11 +1,12 @@
 <template>
   <!-- <li class="list-group-item"> -->
     <ValidationProvider
-      vid="monthly_call"
+      :vid="`monthly_call[${index}]`"
       :name="`Monthly call[${index}]`"
       rules="required"
       v-slot="{ errors }"
       tag="li"
+      :custom-messages="{required: 'Monthly call type is required'}"
       class="list-group-item"
     >
       <div class="d-flex flex-wrap justify-content-between align-items-center">
