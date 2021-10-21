@@ -115,7 +115,20 @@
           </div>
           <div class="">
             <p>Choose the number of each type of call you'd like to purchase</p>
-            <div class="row align-items-center mb-4">
+            <ul class="list-group my-4" ref="monthly_call">
+              <MonthlyCallForm
+                :data="call"
+                v-for="(call, index) in monthlyCall"
+                :key="index"
+                @addCall="addItem('monthlyCall')"
+                @removeCall="removeItem('monthlyCall', index)"
+                :new-item="
+                  monthlyCall.length && monthlyCall.length == index + 1
+                "
+                :index="index"
+              />
+            </ul>
+            <!-- <div class="row align-items-center mb-4">
               <div class="col-12 col-md-2 mb-0">Standard</div>
               <ValidationProvider
                 name="Standard"
@@ -165,7 +178,7 @@
                 }}</span>
               </ValidationProvider>
               <div class="col-6 col-md-auto">monthly</div>
-            </div>
+            </div> -->
 
             <div
               class="alert alert-success px-4"
@@ -233,7 +246,10 @@
                 </select>
               </div>
               <div class="col-6 col-md-7">monthly</div>
-              <div class="col-12 col-md-12 text-danger mt-2" style="font-size: 14px">
+              <div
+                class="col-12 col-md-12 text-danger mt-2"
+                style="font-size: 14px"
+              >
                 {{ errors[0] }}
               </div>
             </ValidationProvider>
@@ -403,22 +419,44 @@
         <FormBlock header="Order Summary">
           <table class="table table-borderless table-responsive">
             <tbody>
-              <tr>
+              <tr
+                v-for="coll in resultTableData.monthlyCalls"
+                :key="coll.id"
+              >
+                <td>{{ coll.label }}</td>
+                <td>{{ starting_date }}</td>
                 <td>
-                  <strong v-show="monthly.standard">{{ monthly.standard }}x</strong> Standard/mo.
+                  {{ coll.amount }}<br class="d-block d-md-none" />
+                  ({{ coll.count }} x {{ coll.price }})
+                </td>
+              </tr>
+              <!-- <tr>
+                
+                <td>
+                  <strong v-show="monthly.standard"
+                    >{{ monthly.standard }}x</strong
+                  >
+                  Standard/mo.
                 </td>
                 <td>{{ starting_date }}</td>
-                <td>{{ resultTableData.standardAmoutn }} ({{ monthly.standard }} x {{ resultTableData.standard }})</td>
+                <td>
+                  {{ resultTableData.standardAmoutn }} ({{ monthly.standard }} x
+                  {{ resultTableData.standard }})
+                </td>
               </tr>
               <tr>
                 <td>
-                  <strong  v-show="monthly.custom">{{ monthly.custom }}x</strong> Custom/mo.
+                  <strong v-show="monthly.custom">{{ monthly.custom }}x</strong>
+                  Custom/mo.
                 </td>
                 <td>{{ starting_date }}</td>
-                <td>{{ resultTableData.customAmoutn }} ({{ monthly.custom }} x {{ resultTableData.custom }})</td>
-              </tr>
+                <td>
+                  {{ resultTableData.customAmoutn }} ({{ monthly.custom }} x
+                  {{ resultTableData.custom }})
+                </td>
+              </tr> -->
               <tr>
-                <td colspan="2"> Individual/mo.</td>
+                <td colspan="2">Individual/mo.</td>
                 <td>{{ resultTableData.individualCallsAmount }}</td>
               </tr>
               <tr
@@ -441,8 +479,13 @@
                 <td>{{ resultTableData.discount }}</td>
               </tr>
               <tr>
-                <td colspan="2">Payment fee <span class="text-muted">(not included in total)</span></td>
-                <td>{{ resultTableData.payment_fee }}</td>
+                <td colspan="2">Payment fee</td>
+                <td>
+                  {{ resultTableData.paymentFeeAmount }}
+                  <span class="text-muted"
+                    >({{ resultTableData.payment_fee }})</span
+                  >
+                </td>
               </tr>
               <tr>
                 <td colspan="2"></td>
@@ -455,10 +498,7 @@
             </tbody>
           </table>
           <div class="text-center text-md-end">
-            <button
-              type="submit"
-              class="btn btn-lg btn-success px-5"
-            >
+            <button type="submit" class="btn btn-lg btn-success px-5">
               Place order
             </button>
           </div>
@@ -475,6 +515,7 @@ import CallTypeForm from "./components/CallTypeForm.vue";
 import mock from "./utils/mock";
 import Tooltip from "./components/Tooltip.vue";
 import SpecificMonthForm from "./components/SpecificMonthForm.vue";
+import MonthlyCallForm from "./components/MonthlyCallForm.vue";
 
 const moneyFilter = (value) => {
   return new Intl.NumberFormat("en-US", {
@@ -490,6 +531,7 @@ export default {
     CallTypeForm,
     Tooltip,
     SpecificMonthForm,
+    MonthlyCallForm,
   },
   data() {
     return {
@@ -522,6 +564,12 @@ export default {
       },
       client: null,
       property: null,
+      monthlyCall: [
+        {
+          type: null,
+          count: 1,
+        },
+      ],
       monthly: {
         custom: null,
         standard: null,
@@ -547,6 +595,7 @@ export default {
   },
   computed: {
     resultTableData() {
+      const notEmpty = (val) => !!val.type && !!val.count;
       const standardPrice =
         this.callTypes.find((call) => call.id === 2)?.price || 0;
       const customPrice =
@@ -555,20 +604,36 @@ export default {
       const standardCallsAmount = standardPrice * this.monthly.standard;
       const customCallsAmount = customPrice * this.monthly.custom;
 
-      const individualCallsAmount =
-        this.calls.reduce((acc, c) => {
-          const price =
-            this.callTypes.find((call) => call.id === c.type)?.price || 1;
-          return c?.type ? acc + c.count * price : acc;
-        }, 0);
-      const total =
-        customCallsAmount + standardCallsAmount + individualCallsAmount;
+      const monthlyCallsAmount = this.monthlyCall.reduce((acc, c) => {
+        const price =
+          this.callTypes.find((call) => call.id === c.type)?.price || 1;
+        return c?.type ? acc + c.count * price : acc;
+      }, 0);
+
+      const monthlyCalls = this.monthlyCall.filter(notEmpty).map((c) => {
+        const callItem = this.callTypes.find(
+          (call) => !c?.type || call.id === c.type
+        );
+        return {
+          label: callItem?.name,
+          count: c.count,
+          price: moneyFilter(callItem?.price),
+          amount: moneyFilter(callItem?.price * c.count),
+        };
+      });
+
+      const individualCallsAmount = this.calls.reduce((acc, c) => {
+        const price =
+          this.callTypes.find((call) => call.id === c.type)?.price || 1;
+        return c?.type ? acc + c.count * price : acc;
+      }, 0);
+      // const total = customCallsAmount + standardCallsAmount;
       const discount =
-        total -
-        total * ((100 - this.discountArray[this.discount].amount) / 100);
-      const payment_fee =
-        this.discount === "annual" ? "2.9% + $0.30" : "2.9% + $0.30 (per payment)";
-      const notEmpty = (val) => !!val.type && !!val.count;
+        monthlyCallsAmount -
+        monthlyCallsAmount * ((100 - this.discountArray[this.discount].amount) / 100);
+      const payment_fee = "3%";
+      // this.discount === "annual" ? "3%" : "3% (per payment)";
+      
       const calls = this.calls.filter(notEmpty).map((c) => {
         const callItem = this.callTypes.find(
           (call) => !c?.type || call.id === c.type
@@ -581,16 +646,21 @@ export default {
           amount: moneyFilter(callItem?.price * c.count),
         };
       });
+      const sum = (monthlyCallsAmount - discount) + individualCallsAmount;
+      const paymentFee = sum - sum * ((100 - 3) / 100);
       return {
         custom: moneyFilter(customPrice),
         standard: moneyFilter(standardPrice),
         standardAmoutn: moneyFilter(standardCallsAmount),
         customAmoutn: moneyFilter(customCallsAmount),
         individualCallsAmount: moneyFilter(individualCallsAmount),
-        total: moneyFilter(total - discount),
+        total: moneyFilter(sum + paymentFee),
         discount: moneyFilter(discount),
         payment_fee: payment_fee,
+        paymentFeeAmount: moneyFilter(paymentFee),
         calls: calls,
+        monthlyCallsAmount: moneyFilter(monthlyCallsAmount),
+        monthlyCalls: monthlyCalls
       };
     },
   },
@@ -628,6 +698,12 @@ export default {
             start_month: null,
           };
           break;
+        case "monthlyCall":
+          el = {
+            type: null,
+            count: 1,
+          };
+          break;
         case "specific_month":
           el = {
             start: null,
@@ -653,13 +729,24 @@ export default {
       //   });
       //   return;
       // }
-
+      this.$nextTick(() => {
+            this.$refs.monthly_call.scrollIntoView({ block: 'start', scrollBehavior: 'smooth' });
+        });
+      
+      // const monthlyCall = this.calls.filter((el) => !el.type);
+      // if (monthlyCall.length) {
+      //   this.$refs.form.setErrors({
+      //     monthly_call: ["Please check all call type"],
+      //   });
+      //   this.$refs.monthly_call.scrollTop = 0
+      //   return;
+      // }
       const request = {
         client: this.client,
         property: this.property,
         calls: this.calls,
         discount: this.discount,
-        monthly: this.monthly,
+        monthly: this.monthlyCall,
         amount: this.resultTableData,
       };
       this.$store.commit("setData", request);
