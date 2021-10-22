@@ -312,10 +312,10 @@
           </div>
         </FormBlock>
 
-        <FormBlock header="Individual Calls">
+        <FormBlock header="Month-to Month">
           <div class="">
             <p>
-              Use this form to purchase individual calls without a discount.
+              Use this form to purchase month-to month without a discount.
             </p>
             <ul class="list-group">
               <CallTypeForm
