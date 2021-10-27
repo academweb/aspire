@@ -3,7 +3,7 @@
     <ValidationProvider
       :vid="`monthly_call[${index}]`"
       :name="`Monthly call[${index}]`"
-      rules="required"
+      rules=""
       v-slot="{ errors }"
       tag="li"
       :custom-messages="{required: 'Monthly call type is required'}"

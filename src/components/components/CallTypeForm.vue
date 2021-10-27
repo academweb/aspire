@@ -3,7 +3,7 @@
   <ValidationProvider
     :vid="`type[${index}]`"
     :name="`Call type[${index}]`"
-    rules="required"
+    rules=""
     v-slot="{ errors, failed }"
     :custom-messages="{required: 'Call type is required'}"
     tag="li"

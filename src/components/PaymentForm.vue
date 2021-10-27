@@ -12,8 +12,8 @@ import {mapState} from 'vuex';
 export default {
   computed:{
     ...mapState({
-      callData: (state) =>  state.call.data.amount.total,
-      autopay: (state) =>  state.call.data.autopay,
+      callData: (state) =>  state?.call?.data?.amount?.total || 0,
+      autopay: (state) =>  state?.call?.data?.autopay || null,
     })
   },
   components: { StripeForm },

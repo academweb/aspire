@@ -33,16 +33,18 @@
 import CustomerForm from "./CustomerForm.vue";
 import FinalForm from "./FinalForm.vue";
 import PaymentForm from "./PaymentForm.vue";
+import Terms from "./Terms.vue";
 import { mapState } from "vuex";
 
 export default {
-  components: { CustomerForm, FinalForm, PaymentForm },
+  components: { CustomerForm, FinalForm, PaymentForm, Terms },
   data() {
     return {
       componentId: {
         "step-1": "CustomerForm",
-        "step-2": "PaymentForm",
-        "step-3": "FinalForm",
+        "step-2": "Terms",
+        "step-3": "PaymentForm",
+        "step-4": "FinalForm",
       },
       currentStep: "step-1",
     };
@@ -55,7 +57,11 @@ export default {
   methods: {
     setStep(step) {
       this.currentStep = step;
+      document.title = this.componentId[step]
     },
+  },
+  mounted() {
+    document.title = this.componentId["step-1"]
   },
 };
 </script>
