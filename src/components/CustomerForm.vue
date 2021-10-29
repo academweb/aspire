@@ -30,7 +30,17 @@
                   mt-3 mt-md-0
                 "
               >
-                <select
+                <input
+                  class="form-control"
+                  type="text"
+                  readonly
+                  v-model="client"
+                  :class="{ 'is-invalid ': !!errors[0] }"
+                />
+                <span class="text-danger" style="font-size: 14px">{{
+                  errors[0]
+                }}</span>
+                <!-- <select
                   class="form-select"
                   aria-label="Client"
                   v-model="client"
@@ -44,7 +54,7 @@
                   >
                     {{ client.name }}
                   </option>
-                </select>
+                </select> -->
                 <span class="text-danger" style="font-size: 14px">{{
                   errors[0]
                 }}</span>
@@ -105,13 +115,13 @@
           </div>
         </div>
 
-        <FormBlock header="Monthly Calls">
+        <FormBlock header="Recurring Monthly Calls">
           <div class="mb-4">
             <p>
-              Use this section to purchase regular monthly calls at a monthly or
+              Use this section to purchase regular annual calls at a monthly or
               quarterly discount.
             </p>
-            <p>For individual calls, got to the next section</p>
+            <p>For calls for an individual month, go to the next section.</p>
           </div>
           <div class="">
             <p>Choose the number of each type of call you'd like to purchase</p>
@@ -312,11 +322,25 @@
           </div>
         </FormBlock>
 
-        <FormBlock header="Month-to Month">
+        <FormBlock header="Additional Month Calls">
           <div class="">
             <p>
-              Use this form to purchase month-to month without a discount.
+              Use this section to purchase additional, a la carte calls specific
+              to months you choose. If you need to buy calls in bulk, at a
+              discount, use the above section instead.
             </p>
+            <div class="my-3 ps-0 ps-md-4">
+              <p class="mb-1">
+                <span class="fw-bold">-</span> Add calls for a specific month,
+                such as when you anticipate opening back up after an off-season.
+              </p>
+              <p class="mb-1">
+                <span class="fw-bold">-</span> Buy calls for specific months at
+                a time, for example, when you're onboarding staff during March
+                and November.
+              </p>
+            </div>
+
             <ul class="list-group">
               <CallTypeForm
                 :data="call"
@@ -328,90 +352,36 @@
                 :index="index"
               />
             </ul>
+            <p class="text-muted mt-3">
+              * - Only use this section to buy a la carte calls. If you need to
+              buy calls in bulk, at a discount, use the above section instead.
+            </p>
           </div>
         </FormBlock>
         <FormBlock header="Notifications">
-          <div class="">
+          <!-- <div class="">
             <p>Who should receive shop call notifications?</p>
-          </div>
-          <div
-            class="row align-items-center mb-2"
-            v-for="(email, index) in notification_emails"
-            :key="index"
-          >
-            <ValidationProvider
-              name="Notifications email"
-              rules="required|email"
-              v-slot="{ errors }"
-              tag="div"
-              class="col-10 col-md-4"
-            >
-              <input
-                class="form-control"
-                type="email"
-                placeholder="Email"
-                v-model="notification_emails[index]"
-                :class="{ 'is-invalid ': !!errors[0] }"
-              />
-              <span class="text-danger" style="font-size: 14px">{{
-                errors[0]
-              }}</span>
-            </ValidationProvider>
+          </div> -->
 
-            <div class="col-2">
-              <button
-                class="btn"
-                v-if="
-                  notification_emails.length &&
-                  notification_emails.length == index + 1
-                "
-                @click.prevent="addItem('notification_emails')"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="26"
-                  height="26"
-                  fill="currentColor"
-                  class="bi bi-journal-plus"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M8 5.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 .5-.5z"
-                  />
-                  <path
-                    d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"
-                  />
-                  <path
-                    d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"
-                  />
-                </svg>
-              </button>
-              <button
-                v-else
-                @click.prevent="removeItem('notification_emails', index)"
-                class="btn"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="26"
-                  height="26"
-                  fill="currentColor"
-                  class="bi bi-journal-minus text-danger"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M5.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5z"
-                  />
-                  <path
-                    d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"
-                  />
-                  <path
-                    d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"
-                  />
-                </svg>
-              </button>
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <EmailNotifications
+                label="Who should receive shop call notifications?"
+                placeholder="Notifications Email"
+                :data="notification_emails"
+                @add="addItem('notification_emails')"
+                @remove="removeItem('notification_emails')"
+              />
+            </div>
+
+            <div class="col-12 col-md-6">
+              <EmailNotifications
+                label="Who should receive cancellation notifications?"
+                placeholder="Cancellation email"
+                :data="cancellation_notification_emails"
+                @add="addItem('cancellation_notification_emails')"
+                @remove="removeItem('cancellation_notification_emails')"
+              />
             </div>
           </div>
         </FormBlock>
@@ -419,10 +389,7 @@
         <FormBlock header="Order Summary">
           <table class="table table-borderless table-responsive">
             <tbody>
-              <tr
-                v-for="coll in resultTableData.monthlyCalls"
-                :key="coll.id"
-              >
+              <tr v-for="coll in resultTableData.monthlyCalls" :key="coll.id">
                 <td>{{ coll.label }}</td>
                 <td>{{ starting_date }}</td>
                 <td>
@@ -516,6 +483,7 @@ import mock from "./utils/mock";
 import Tooltip from "./components/Tooltip.vue";
 import SpecificMonthForm from "./components/SpecificMonthForm.vue";
 import MonthlyCallForm from "./components/MonthlyCallForm.vue";
+import EmailNotifications from "./components/EmailNotifications.vue";
 
 const moneyFilter = (value) => {
   return new Intl.NumberFormat("en-US", {
@@ -532,6 +500,7 @@ export default {
     Tooltip,
     SpecificMonthForm,
     MonthlyCallForm,
+    EmailNotifications,
   },
   data() {
     return {
@@ -562,7 +531,7 @@ export default {
           amount: 10,
         },
       },
-      client: null,
+      client: "Client",
       property: null,
       monthlyCall: [
         {
@@ -591,6 +560,7 @@ export default {
         },
       ],
       notification_emails: [""],
+      cancellation_notification_emails: [""],
     };
   },
   computed: {
@@ -630,10 +600,11 @@ export default {
       // const total = customCallsAmount + standardCallsAmount;
       const discount =
         monthlyCallsAmount -
-        monthlyCallsAmount * ((100 - this.discountArray[this.discount].amount) / 100);
+        monthlyCallsAmount *
+          ((100 - this.discountArray[this.discount].amount) / 100);
       const payment_fee = "3%";
       // this.discount === "annual" ? "3%" : "3% (per payment)";
-      
+
       const calls = this.calls.filter(notEmpty).map((c) => {
         const callItem = this.callTypes.find(
           (call) => !c?.type || call.id === c.type
@@ -646,7 +617,7 @@ export default {
           amount: moneyFilter(callItem?.price * c.count),
         };
       });
-      const sum = (monthlyCallsAmount - discount) + individualCallsAmount;
+      const sum = monthlyCallsAmount - discount + individualCallsAmount;
       const paymentFee = sum - sum * ((100 - 3) / 100);
       return {
         custom: moneyFilter(customPrice),
@@ -660,7 +631,7 @@ export default {
         paymentFeeAmount: moneyFilter(paymentFee),
         calls: calls,
         monthlyCallsAmount: moneyFilter(monthlyCallsAmount),
-        monthlyCalls: monthlyCalls
+        monthlyCalls: monthlyCalls,
       };
     },
   },
@@ -713,6 +684,9 @@ export default {
         case "notification_emails":
           el = "";
           break;
+        case "cancellation_notification_emails":
+          el = "";
+          break;
         default:
           el = "";
       }
@@ -730,9 +704,12 @@ export default {
       //   return;
       // }
       this.$nextTick(() => {
-            this.$refs.monthly_call.scrollIntoView({ block: 'start', scrollBehavior: 'smooth' });
+        this.$refs.monthly_call.scrollIntoView({
+          block: "start",
+          scrollBehavior: "smooth",
         });
-      
+      });
+
       // const monthlyCall = this.calls.filter((el) => !el.type);
       // if (monthlyCall.length) {
       //   this.$refs.form.setErrors({

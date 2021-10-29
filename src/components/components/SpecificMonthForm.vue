@@ -14,13 +14,23 @@
               >Starting date</label
             >
             <div class="col-sm-8">
-              <input
+              <select
+              id="excluded_start"
+              class="form-select"
+              aria-label="Default select example"
+              v-model="data.start"
+              required
+            >
+              <option selected value="null" disabled>Select</option>
+              <option v-for="m in months" :value="m" :key="m">{{ m }}</option>
+            </select>
+              <!-- <input
                 v-model="data.start"
                 type="date"
                 class="form-control"
                 id="excluded_start"
                 :class="{ 'is-invalid ': !!errors[0] }"
-              />
+              /> -->
               <span class="form-control-invalid" >{{
                 errors[0]
               }}</span>
@@ -38,13 +48,23 @@
             >Ending date</label
           >
           <div class="col-sm-8">
-            <input
+            <select
+              id="excluded_end"
+              class="form-select"
+              aria-label="Default select example"
+              v-model="data.end"
+              required
+            >
+              <option selected value="null" disabled>Select</option>
+              <option v-for="m in months" :value="m" :key="m">{{ m }}</option>
+            </select>
+            <!-- <input
               v-model="data.end"
               type="date"
               class="form-control"
               id="excluded_end"
               :class="{ 'is-invalid ': !!errors[0] }"
-            />
+            /> -->
             
           </div>
           <span class="form-control-invalid">{{
@@ -130,6 +150,24 @@ export default {
     },
     index: Number,
     newItem: Boolean,
+  },
+  data() {
+    return {
+      months: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
+    }
   },
 };
 </script>

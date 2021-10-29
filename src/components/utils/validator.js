@@ -1,6 +1,6 @@
 import { ValidationProvider, ValidationObserver, extend, configure } from 'vee-validate';
 import * as rules from "vee-validate/dist/rules";
-import moment from 'moment';
+// import moment from 'moment';
 // Add all rules
 Object.keys(rules).map(rule => extend(rule, rules[rule]))
 
@@ -35,10 +35,26 @@ extend('required', {
   computesRequired: true
 });
 
+const months =[
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 extend("more", {
   params: ["otherValue", "more"],
   validate: (value, { otherValue, more }) => {
-    return value ? moment(more).diff(moment(otherValue), 'days') > 0 : false
+    return months.findIndex(e => e === more) > months.findIndex(e => e === otherValue)
+    // return value ? moment(more).diff(moment(otherValue), 'days') > 0 : false
   },
   message:
     "The end date must be greater than the start date({_otherValue_})."
