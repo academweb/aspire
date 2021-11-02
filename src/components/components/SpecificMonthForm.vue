@@ -2,28 +2,28 @@
   <li class="list-group-item">
     <div class="d-flex flex-wrap justify-content-between align-items-center">
       <div class="col-12 col-md-11 d-flex flex-wrap align-items-center">
-        <div class="col-12 col-md-6 row">
+        <div class="col-12 row">
           <ValidationProvider
-            name="Starting date"
+            name="Month to exclude"
             rules="required"
             v-slot="{ errors }"
-            :vid="`startMonth[${index}]`"
             slim
           >
             <label for="excluded_start" class="col-sm-4 col-form-label"
-              >Starting date</label
-            >
+              >Month to exclude
+            </label>
+
             <div class="col-sm-8">
               <select
-              id="excluded_start"
-              class="form-select"
-              aria-label="Default select example"
-              v-model="data.start"
-              required
-            >
-              <option selected value="null" disabled>Select</option>
-              <option v-for="m in months" :value="m" :key="m">{{ m }}</option>
-            </select>
+                id="excluded_start"
+                class="form-select"
+                aria-label="Default select example"
+                v-model="data.start"
+                :class="{ 'is-invalid ': !!errors[0] }"
+              >
+                <option selected value="null" disabled>Select</option>
+                <option v-for="m in months" :value="m" :key="m">{{ m }}</option>
+              </select>
               <!-- <input
                 v-model="data.start"
                 type="date"
@@ -31,13 +31,11 @@
                 id="excluded_start"
                 :class="{ 'is-invalid ': !!errors[0] }"
               /> -->
-              <span class="form-control-invalid" >{{
-                errors[0]
-              }}</span>
+              <span class="form-control-invalid">{{ errors[0] }}</span>
             </div>
           </ValidationProvider>
         </div>
-        <div class="col-12 col-md-6 row ps-0 ps-md-3">
+        <!-- <div class="col-12 col-md-6 row ps-0 ps-md-3">
           <ValidationProvider
             name="Ending date"
             :rules="{ required: true, more: { otherValue: '@startMonth'+`[${index}]`, more: data.end } }"
@@ -58,20 +56,13 @@
               <option selected value="null" disabled>Select</option>
               <option v-for="m in months" :value="m" :key="m">{{ m }}</option>
             </select>
-            <!-- <input
-              v-model="data.end"
-              type="date"
-              class="form-control"
-              id="excluded_end"
-              :class="{ 'is-invalid ': !!errors[0] }"
-            /> -->
             
           </div>
           <span class="form-control-invalid">{{
                 errors[0]
               }}</span>
           </ValidationProvider>
-        </div>
+        </div> -->
       </div>
       <div
         class="
@@ -90,6 +81,12 @@
           <div class="d-block d-md-none me-2 text-muted">
             Add other call type
           </div>
+           <Tooltip
+            :size="24"
+            class="ms-2"
+            title="Use the + sign to add additional fields. (max 3)"
+            info
+          >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="36"
@@ -109,6 +106,7 @@
               d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"
             />
           </svg>
+          </Tooltip>
         </button>
         <button v-else class="btn d-flex align-items-center text-danger">
           <div class="d-block d-md-none me-2 text-danger">Delete</div>
@@ -139,6 +137,7 @@
 </template>
 
 <script>
+import Tooltip from "./Tooltip.vue";
 export default {
   props: {
     data: {
@@ -151,6 +150,7 @@ export default {
     index: Number,
     newItem: Boolean,
   },
+  components: { Tooltip },
   data() {
     return {
       months: [
@@ -167,7 +167,7 @@ export default {
         "Nov",
         "Dec",
       ],
-    }
+    };
   },
 };
 </script>

@@ -118,7 +118,7 @@
         <FormBlock header="Recurring Monthly Calls">
           <div class="mb-4">
             <p>
-              Use this section to purchase regular annual calls at a monthly or
+              Use this section to purchase regular annual calls at a annual or
               quarterly discount.
             </p>
             <p>For calls for an individual month, go to the next section.</p>
@@ -303,17 +303,18 @@
                 </label>
               </div>
               <transition name="fade" type="out-in">
-                <ul class="list-group" v-if="exclude != 'all_year'">
+                <ul class="list-group" v-if="exclude != 'all_year'" style="max-width: 40rem;">
                   <SpecificMonthForm
-                    v-for="(m, index) in specific_month"
+                    v-for="(m, index) in excluded_specific_month"
                     :data="m"
                     :index="index"
                     :key="index"
-                    @addItem="addItem('specific_month')"
-                    @removeItem="removeItem('specific_month', index)"
+                    @addItem="addItem('excluded_specific_month')"
+                    @removeItem="removeItem('excluded_specific_month', index)"
                     :new-item="
-                      specific_month.length &&
-                      specific_month.length == index + 1
+                      excluded_specific_month.length &&
+                      excluded_specific_month.length == index + 1 &&
+                      excluded_specific_month.length <3
                     "
                   />
                 </ul>
@@ -368,6 +369,7 @@
               <EmailNotifications
                 label="Who should receive shop call notifications?"
                 placeholder="Notifications Email"
+                name="Notifications Email"
                 :data="notification_emails"
                 @add="addItem('notification_emails')"
                 @remove="removeItem('notification_emails')"
@@ -378,6 +380,7 @@
               <EmailNotifications
                 label="Who should receive cancellation notifications?"
                 placeholder="Cancellation email"
+                name="Cancellation Notifications email"
                 :data="cancellation_notification_emails"
                 @add="addItem('cancellation_notification_emails')"
                 @remove="removeItem('cancellation_notification_emails')"
@@ -552,6 +555,9 @@ export default {
           end: null,
         },
       ],
+      excluded_specific_month: [
+        ''
+      ],
       calls: [
         {
           type: null,
@@ -675,11 +681,8 @@ export default {
             count: 1,
           };
           break;
-        case "specific_month":
-          el = {
-            start: null,
-            end: null,
-          };
+        case "excluded_specific_month":
+          el = "";
           break;
         case "notification_emails":
           el = "";

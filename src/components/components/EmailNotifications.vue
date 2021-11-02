@@ -7,8 +7,8 @@
       :key="index"
     >
       <ValidationProvider
-        name="Сancellation Notifications email"
-        rules="email"
+        :name="name"
+        rules="email|required"
         v-slot="{ errors }"
         tag="div"
         class="col-10"
@@ -93,6 +93,7 @@ export default {
     },
     label: String,
     placeholder: String,
+    name: String,
   },
   components: { Tooltip },
 };
