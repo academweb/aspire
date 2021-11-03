@@ -40,21 +40,6 @@
                 <span class="text-danger" style="font-size: 14px">{{
                   errors[0]
                 }}</span>
-                <!-- <select
-                  class="form-select"
-                  aria-label="Client"
-                  v-model="client"
-                  :class="{ 'is-invalid ': !!errors[0] }"
-                >
-                  <option selected value="null" disabled>Select client</option>
-                  <option
-                    v-for="client in clients"
-                    :value="client.id"
-                    :key="client.id"
-                  >
-                    {{ client.name }}
-                  </option>
-                </select> -->
                 <span class="text-danger" style="font-size: 14px">{{
                   errors[0]
                 }}</span>
@@ -118,8 +103,8 @@
         <FormBlock header="Recurring Monthly Calls">
           <div class="mb-4">
             <p>
-              Use this section to purchase regular annual calls at a annual or
-              quarterly discount.
+              Use this section to purchase regular monthly calls at a annual or
+              quarterly discount
             </p>
             <p>For calls for an individual month, go to the next section.</p>
           </div>
@@ -138,58 +123,6 @@
                 :index="index"
               />
             </ul>
-            <!-- <div class="row align-items-center mb-4">
-              <div class="col-12 col-md-2 mb-0">Standard</div>
-              <ValidationProvider
-                name="Standard"
-                rules=""
-                v-slot="{ errors }"
-                tag="div"
-                class="col-6 col-md-3"
-              >
-                <select
-                  class="form-select"
-                  aria-label="Standard"
-                  v-model="monthly.standard"
-                  :class="{ 'is-invalid ': !!errors[0] }"
-                >
-                  <option selected value="null" disabled>Select</option>
-                  <option selected value="0">0</option>
-                  <option v-for="m in 999" :value="m" :key="m">{{ m }}</option>
-                </select>
-                <span class="text-danger" style="font-size: 14px">{{
-                  errors[0]
-                }}</span>
-              </ValidationProvider>
-              <div class="col-6 col-md-auto">monthly</div>
-            </div>
-
-            <div class="row align-items-center mb-4">
-              <div class="col-12 col-md-2 mb-0">Custom</div>
-              <ValidationProvider
-                name="Custom"
-                rules=""
-                v-slot="{ errors }"
-                tag="div"
-                class="col-6 col-md-3"
-              >
-                <select
-                  class="form-select"
-                  aria-label="Custom"
-                  v-model="monthly.custom"
-                  :class="{ 'is-invalid ': !!errors[0] }"
-                >
-                  <option selected value="null" disabled>Select</option>
-                  <option selected value="0">0</option>
-                  <option v-for="m in 999" :value="m" :key="m">{{ m }}</option>
-                </select>
-                <span class="text-danger" style="font-size: 14px">{{
-                  errors[0]
-                }}</span>
-              </ValidationProvider>
-              <div class="col-6 col-md-auto">monthly</div>
-            </div> -->
-
             <div
               class="alert alert-success px-4"
               role="alert"
@@ -303,7 +236,11 @@
                 </label>
               </div>
               <transition name="fade" type="out-in">
-                <ul class="list-group" v-if="exclude != 'all_year'" style="max-width: 40rem;">
+                <ul
+                  class="list-group"
+                  v-if="exclude != 'all_year'"
+                  style="max-width: 40rem"
+                >
                   <SpecificMonthForm
                     v-for="(m, index) in excluded_specific_month"
                     :data="m"
@@ -314,7 +251,7 @@
                     :new-item="
                       excluded_specific_month.length &&
                       excluded_specific_month.length == index + 1 &&
-                      excluded_specific_month.length <3
+                      excluded_specific_month.length < 3
                     "
                   />
                 </ul>
@@ -360,10 +297,6 @@
           </div>
         </FormBlock>
         <FormBlock header="Notifications">
-          <!-- <div class="">
-            <p>Who should receive shop call notifications?</p>
-          </div> -->
-
           <div class="row">
             <div class="col-12 col-md-6">
               <EmailNotifications
@@ -555,9 +488,7 @@ export default {
           end: null,
         },
       ],
-      excluded_specific_month: [
-        ''
-      ],
+      excluded_specific_month: [""],
       calls: [
         {
           type: null,
